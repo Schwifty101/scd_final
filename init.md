@@ -85,7 +85,7 @@ This project involves 7 parts covering Docker containerization, deployment, and 
 
 ---
 
-### Part 4: Containerize the Application (10 marks) - ⏳ PENDING
+### Part 4: Containerize the Application (10 marks) - ✅ COMPLETED
 
 **Objective**: Create Dockerfiles and publish images
 
