@@ -580,9 +580,26 @@ MONGO_URI=mongodb://localhost:27017/vaultdb node main.js
 
 ---
 
-### Task 3.11: Merge Feature Branch (1 mark)
+### Task 3.12: Test All Features (1 mark)
 
-**Purpose**: Merge completed features back to main branch.
+**Purpose**: Validate search, sort, export, backup, statistics, and MongoDB paths end-to-end.
+
+**Commands**:
+
+```bash
+cd "/Users/sobanahmad/Fast-Nuces/Semester 7/SCD/final/SCDProject25"
+date
+MONGO_URI=mongodb://localhost:27017/vaultdb node main.js
+# exercised options: 1 (search), 2 (sort), 6 (export), 7 (backup), 8 (stats), 9 (exit)
+```
+
+**Result**: ✅ CLI flows verified against MongoDB backend; export/backups/stats all succeed
+
+---
+
+### Task 3.13: Merge Feature Branch (1 mark)
+
+**Purpose**: Merge completed features back to main branch after validation.
 
 **Commands**:
 
