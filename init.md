@@ -62,7 +62,7 @@ This project involves 7 parts covering Docker containerization, deployment, and 
 
 ---
 
-### Part 3: Building Features into SCDProject25 (15 marks) - 🔄 IN PROGRESS
+### Part 3: Building Features into SCDProject25 (15 marks) - ✅ COMPLETED
 
 **Objective**: Clone NodeVault, create feature branch, implement 7 features, integrate MongoDB
 
@@ -77,9 +77,9 @@ This project involves 7 parts covering Docker containerization, deployment, and 
 - [x] Task 3.9: Set up MongoDB Docker container
 - [x] Task 3.10: Integrate MongoDB into application
 - [x] Task 3.11: Move MongoDB connection to .env file
-- [ ] Task 3.12: Test all features
-- [ ] Task 3.13: Merge feature branch to main
-- [ ] Report Part 3 completed
+- [x] Task 3.12: Test all features
+- [x] Task 3.13: Merge feature branch to main
+- [x] Report Part 3 completed
 
 **Estimated Time**: 6-8 hours
 
@@ -214,9 +214,9 @@ Before starting execution:
 
 ## Next Step
 
-**Current**: Part 3, Task 3.4: Implement Search Functionality
+**Current**: Part 4, Task 4.1: Create containerization branch
 
-Last completed: Task 3.3 ✅
+Last completed: Part 3 ✅
 
 ---
 
