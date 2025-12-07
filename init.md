@@ -12,6 +12,7 @@
 This project involves 7 parts covering Docker containerization, deployment, and orchestration on macOS. The project will be completed incrementally with screenshots and a progressive report (`PROJECT_REPORT.md`).
 
 ### Key Repositories:
+
 1. **SCD-25-NodeApp**: https://github.com/LaibaImran1500/SCD-25-NodeApp
 2. **SCDProject25**: https://github.com/LaibaImran1500/SCDProject25
 
@@ -68,12 +69,12 @@ This project involves 7 parts covering Docker containerization, deployment, and 
 - [x] Task 3.1: Clone SCDProject25 repository ✅
 - [x] Task 3.2: Run application locally ✅
 - [x] Task 3.3: Create feature branch ✅
-- [ ] Task 3.4: Implement Search Functionality
-- [ ] Task 3.5: Implement Sorting Capability
-- [ ] Task 3.6: Implement Export to Text File
-- [ ] Task 3.7: Implement Automatic Backup System
-- [ ] Task 3.8: Implement Data Statistics
-- [ ] Task 3.9: Set up MongoDB Docker container
+- [x] Task 3.4: Implement Search Functionality
+- [x] Task 3.5: Implement Sorting Capability
+- [x] Task 3.6: Implement Export to Text File
+- [x] Task 3.7: Implement Automatic Backup System
+- [x] Task 3.8: Implement Data Statistics
+- [x] Task 3.9: Set up MongoDB Docker container
 - [ ] Task 3.10: Integrate MongoDB into application
 - [ ] Task 3.11: Move MongoDB connection to .env file
 - [ ] Task 3.12: Test all features

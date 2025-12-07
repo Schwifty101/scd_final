@@ -1,0 +1,8 @@
+NodeVault Export
+Generated: 2025-12-07T15:55:33.851Z
+Total Records: 3
+File: export.txt
+------------------------------
+ID: 1765122894889 | Name: soban | Value: 1 | Created: Sun Dec 07 2025 20:54:54 GMT+0500 (Pakistan Standard Time)
+ID: 1765122901624 | Name: suleman | Value: 2 | Created: Sun Dec 07 2025 20:55:01 GMT+0500 (Pakistan Standard Time)
+ID: 1765122912234 | Name: fatima | Value: 3 | Created: Sun Dec 07 2025 20:55:12 GMT+0500 (Pakistan Standard Time)
