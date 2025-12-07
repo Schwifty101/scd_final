@@ -12,6 +12,7 @@
 ## Part 1: Understanding Environment Inconsistency (10 Marks)
 
 ### Overview
+
 This section demonstrates environment inconsistency where an application requiring Node 18+ fails on a server running Node 16, simulating real-world deployment challenges.
 
 ### Task 1.1: Install and Verify nvm (2 marks)
@@ -19,6 +20,7 @@ This section demonstrates environment inconsistency where an application requiri
 **Purpose**: Install Node Version Manager (nvm) to manage multiple Node.js versions on macOS.
 
 **Commands Executed**:
+
 ```bash
 brew install nvm
 mkdir ~/.nvm
@@ -29,10 +31,10 @@ nvm --version
 
 **Screenshots**:
 ![nvm Installation 1](<screenshots/Screenshot 2025-12-07 at 4.49.29 PM.png>)
-*Screenshot shows: Homebrew installing nvm package*
+_Screenshot shows: Homebrew installing nvm package_
 
 ![nvm Installation 2](<screenshots/Screenshot 2025-12-07 at 4.49.39 PM.png>)
-*Screenshot shows: nvm version verification and shell configuration*
+_Screenshot shows: nvm version verification and shell configuration_
 
 **Result**: ✅ nvm successfully installed and verified
 
@@ -43,6 +45,7 @@ nvm --version
 **Purpose**: Install Node.js version 16 to simulate production server environment.
 
 **Commands Executed**:
+
 ```bash
 nvm install 16
 nvm use 16
@@ -56,7 +59,7 @@ date
 **Screenshots**:
 
 ![Node 16 Installation](<screenshots/Screenshot 2025-12-07 at 4.54.43 PM.png>)
-*Screenshot shows: Node 16.x.x installed, active version displayed with npm version, current date/time*
+_Screenshot shows: Node 16.x.x installed, active version displayed with npm version, current date/time_
 
 **Result**: ✅ Node 16 successfully installed and activated
 
@@ -67,6 +70,7 @@ date
 **Purpose**: Clone the SCD-25-NodeApp repository containing an application that requires Node 18+.
 
 **Commands Executed**:
+
 ```bash
 cd ~/Fast-Nuces/Semester\ 7/SCD/final/
 git clone https://github.com/LaibaImran1500/SCD-25-NodeApp.git
@@ -81,7 +85,7 @@ cat app.js
 **Screenshots**:
 
 ![Repository Clone](<screenshots/Screenshot 2025-12-07 at 5.09.50 PM.png>)
-*Screenshot shows: Git clone output, directory listing, package.json content with Express 5.1.0, app.js source code*
+_Screenshot shows: Git clone output, directory listing, package.json content with Express 5.1.0, app.js source code_
 
 **Result**: ✅ Repository cloned, version mismatch identified
 
@@ -92,6 +96,7 @@ cat app.js
 **Purpose**: Attempt to run the application on Node 16 and document the failures.
 
 **Commands Executed**:
+
 ```bash
 nvm use 16
 node -v
@@ -100,11 +105,13 @@ node app.js
 ```
 
 **Documented Errors**:
+
 1. **npm install warnings**: Peer dependency warnings about Node version compatibility
 2. **ReferenceError: fetch is not defined**: Native fetch API not available in Node 16 (introduced in Node 18.0.0)
 3. **Express 5.1.0 incompatibility**: Express 5.x expects Node 18+ features
 
-**Root Cause**: 
+**Root Cause**:
+
 - Application requires Node 18+ (Express 5.1.0, native fetch)
 - Server has Node 16 (locked for other applications)
 - Environment mismatch prevents deployment
@@ -112,7 +119,7 @@ node app.js
 **Screenshots**:
 
 ![Deployment Errors](<screenshots/Screenshot 2025-12-07 at 5.11.44 PM.png>)
-*Screenshot shows: npm install warnings, node app.js error with stack trace showing fetch undefined, current date/time*
+_Screenshot shows: npm install warnings, node app.js error with stack trace showing fetch undefined, current date/time_
 
 **Explanation**: This demonstrates the "works on my machine" problem where development (Node 18+) and production (Node 16) environments differ, causing deployment failure.
 
@@ -127,6 +134,7 @@ node app.js
 **Purpose**: Test and verify that Node 18 resolves the compatibility issues.
 
 **Testing Commands**:
+
 ```bash
 nvm install 18
 nvm use 18
@@ -138,6 +146,7 @@ curl http://localhost:3000/todo/1
 ```
 
 **Justification with References**:
+
 1. **Express 5.1.0 Requirement**: Official Express.js documentation and npm package specifications confirm Node 18+ requirement
 2. **Native Fetch API**: Introduced in Node.js v18.0.0 (April 19, 2022) as documented in Node.js release notes
 3. **LTS Status**: Node 18 (Hydrogen) is LTS, stable for production
@@ -146,13 +155,13 @@ curl http://localhost:3000/todo/1
 **Screenshots**:
 
 ![Node 18 Testing 1](<screenshots/Screenshot 2025-12-07 at 5.16.19 PM.png>)
-*Screenshot shows: Node 18 installation, version verification, clean npm install without warnings*
+_Screenshot shows: Node 18 installation, version verification, clean npm install without warnings_
 
 ![Node 18 Testing 2](<screenshots/Screenshot 2025-12-07 at 5.16.41 PM.png>)
-*Screenshot shows: Application running successfully on Node 18*
+_Screenshot shows: Application running successfully on Node 18_
 
 ![HTTP Endpoint Test](<screenshots/Screenshot 2025-12-07 at 5.28.00 PM.png>)
-*Screenshot shows: curl request to /todo/1 returning valid JSON response, server logs, date/time*
+_Screenshot shows: curl request to /todo/1 returning valid JSON response, server logs, date/time_
 
 **Result**: ✅ Node 18 identified as correct version
 
@@ -163,6 +172,7 @@ curl http://localhost:3000/todo/1
 **Purpose**: Create a Dockerfile to package the application with Node 18.
 
 **Dockerfile**:
+
 ```dockerfile
 # Use Node 18 LTS Alpine (minimal Linux distribution)
 FROM node:18-alpine
@@ -187,16 +197,17 @@ CMD ["node", "app.js"]
 ```
 
 **Explanation**:
+
 - **FROM node:18-alpine**: Alpine-based image (~50MB vs ~200MB Ubuntu-based)
 - **WORKDIR /app**: Organized container filesystem
-- **COPY package*.json first**: Optimizes Docker layer caching
+- **COPY package\*.json first**: Optimizes Docker layer caching
 - **RUN npm install --production**: Smaller image, production dependencies only
 - **CMD**: Default startup command
 
 **Screenshots**:
 
 ![Dockerfile Creation](<screenshots/Screenshot 2025-12-07 at 6.17.44 PM.png>)
-*Screenshot shows: cat Dockerfile displaying all instructions with comments*
+_Screenshot shows: cat Dockerfile displaying all instructions with comments_
 
 **Result**: ✅ Dockerfile created with best practices
 
@@ -207,12 +218,14 @@ CMD ["node", "app.js"]
 **Purpose**: Build Docker image and test container locally.
 
 **Build Commands**:
+
 ```bash
 docker build -t schwifty404/scd-nodeapp:v1.0 .
 docker images | grep scd-nodeapp
 ```
 
 **Test Commands**:
+
 ```bash
 docker run -d -p 3000:3000 --name nodeapp-test schwifty404/scd-nodeapp:v1.0
 docker ps
@@ -224,13 +237,13 @@ docker stop nodeapp-test && docker rm nodeapp-test
 **Screenshots**:
 
 ![Docker Build](<screenshots/Screenshot 2025-12-07 at 6.40.35 PM.png>)
-*Screenshot shows: Docker build process (steps 1-7), layer creation, "Successfully built" message, image listed with ~65MB size*
+_Screenshot shows: Docker build process (steps 1-7), layer creation, "Successfully built" message, image listed with ~65MB size_
 
 ![Local Testing 1](<screenshots/Screenshot 2025-12-07 at 6.48.15 PM.png>)
-*Screenshot shows: Container running (docker ps), port mapping 0.0.0.0:3000->3000/tcp, curl test with JSON response*
+_Screenshot shows: Container running (docker ps), port mapping 0.0.0.0:3000->3000/tcp, curl test with JSON response_
 
 ![Local Testing 2](<screenshots/Screenshot 2025-12-07 at 6.49.03 PM.png>)
-*Screenshot shows: docker logs output "Server running on http://localhost:3000", cleanup commands*
+_Screenshot shows: docker logs output "Server running on http://localhost:3000", cleanup commands_
 
 **Result**: ✅ Image built (~65MB), container tested successfully
 
@@ -241,6 +254,7 @@ docker stop nodeapp-test && docker rm nodeapp-test
 **Purpose**: Publish image to Docker Hub for global accessibility.
 
 **Commands**:
+
 ```bash
 docker login
 docker push schwifty404/scd-nodeapp:v1.0
@@ -251,10 +265,10 @@ docker push schwifty404/scd-nodeapp:v1.0
 **Screenshots**:
 
 ![Docker Hub Push 1](<screenshots/Screenshot 2025-12-07 at 6.53.25 PM.png>)
-*Screenshot shows: docker login success, docker push command, layers being pushed*
+_Screenshot shows: docker login success, docker push command, layers being pushed_
 
 ![Docker Hub Push 2](<screenshots/Screenshot 2025-12-07 at 6.53.51 PM.png>)
-*Screenshot shows: "Layer already exists" for base layers, "Pushed" for new layers, digest (sha256:...), Docker Hub URL*
+_Screenshot shows: "Layer already exists" for base layers, "Pushed" for new layers, digest (sha256:...), Docker Hub URL_
 
 **Result**: ✅ Image published to Docker Hub successfully
 
@@ -265,6 +279,7 @@ docker push schwifty404/scd-nodeapp:v1.0
 **Purpose**: Deploy containerized application from Docker Hub to simulate production deployment.
 
 **Commands**:
+
 ```bash
 docker rmi schwifty404/scd-nodeapp:v1.0  # Simulate fresh server
 docker pull schwifty404/scd-nodeapp:v1.0
@@ -278,10 +293,10 @@ docker logs nodeapp-server
 **Screenshots**:
 
 ![Server Deployment 1](<screenshots/Screenshot 2025-12-07 at 6.59.39 PM.png>)
-*Screenshot shows: docker pull downloading layers, docker run starting container, docker ps showing "Up" status*
+_Screenshot shows: docker pull downloading layers, docker run starting container, docker ps showing "Up" status_
 
 ![Server Deployment 2](<screenshots/Screenshot 2025-12-07 at 7.00.08 PM.png>)
-*Screenshot shows: Multiple curl tests with valid JSON responses, docker logs confirming server running, date/time*
+_Screenshot shows: Multiple curl tests with valid JSON responses, docker logs confirming server running, date/time_
 
 **Result**: ✅ Container deployed from Docker Hub, HTTP endpoints tested successfully
 
@@ -296,6 +311,7 @@ docker logs nodeapp-server
 **Purpose**: Clone NodeVault application and verify base functionality.
 
 **Commands**:
+
 ```bash
 git clone https://github.com/LaibaImran1500/SCDProject25.git
 cd SCDProject25
@@ -307,13 +323,13 @@ node main.js
 **Screenshots**:
 
 ![Clone SCDProject25](<screenshots/Screenshot 2025-12-07 at 7.19.25 PM.png>)
-*Screenshot shows: Git clone output, directory structure (main.js, db/, events/, data/), git status*
+_Screenshot shows: Git clone output, directory structure (main.js, db/, events/, data/), git status_
 
 ![Test Application 1](<screenshots/Screenshot 2025-12-07 at 7.24.32 PM.png>)
-*Screenshot shows: Application menu, testing Add Record and List Records functions*
+_Screenshot shows: Application menu, testing Add Record and List Records functions_
 
 ![Test Application 2](<screenshots/Screenshot 2025-12-07 at 7.24.46 PM.png>)
-*Screenshot shows: vault.json contents with stored records, event logs, date/time*
+_Screenshot shows: vault.json contents with stored records, event logs, date/time_
 
 **Result**: ✅ Repository cloned, base application tested
 
@@ -324,6 +340,7 @@ node main.js
 **Purpose**: Follow Git best practices by creating a dedicated branch for feature development.
 
 **Commands**:
+
 ```bash
 git checkout -b feature/enhancements
 git branch
@@ -333,10 +350,10 @@ git status
 **Screenshots**:
 
 ![Feature Branch 1](<screenshots/Screenshot 2025-12-07 at 7.30.53 PM.png>)
-*Screenshot shows: git checkout -b command, "Switched to new branch" message*
+_Screenshot shows: git checkout -b command, "Switched to new branch" message_
 
 ![Feature Branch 2](<screenshots/Screenshot 2025-12-07 at 7.36.23 PM.png>)
-*Screenshot shows: git branch output with asterisk on feature/enhancements, clean status*
+_Screenshot shows: git branch output with asterisk on feature/enhancements, clean status_
 
 **Result**: ✅ Feature branch created successfully
 
@@ -347,6 +364,7 @@ git status
 **Purpose**: Add case-insensitive search across name, value, and ID fields.
 
 **Implementation**:
+
 ```javascript
 // db/index.js - searchRecords function
 searchRecords(searchTerm) {
@@ -365,7 +383,7 @@ searchRecords(searchTerm) {
 **Screenshots**:
 
 ![Search Implementation](<screenshots/Screenshot 2025-12-07 at 7.50.04 PM.png>)
-*Screenshot shows: Search menu option, entering keyword, matching records displayed with ID/Name/Value, no case sensitivity*
+_Screenshot shows: Search menu option, entering keyword, matching records displayed with ID/Name/Value, no case sensitivity_
 
 **Result**: ✅ Search works across all fields (name, value, ID)
 
@@ -376,13 +394,14 @@ searchRecords(searchTerm) {
 **Purpose**: Sort records by id/name/value in ascending/descending order.
 
 **Implementation**:
+
 ```javascript
 // db/index.js - sortRecords function
 sortRecords(field, order) {
   const records = [...this.readRecords()]; // Copy to avoid mutation
   return records.sort((a, b) => {
-    const compare = field === 'id' ? 
-      a[field] - b[field] : 
+    const compare = field === 'id' ?
+      a[field] - b[field] :
       a[field].toLowerCase().localeCompare(b[field].toLowerCase());
     return order === 'asc' ? compare : -compare;
   });
@@ -394,7 +413,7 @@ sortRecords(field, order) {
 **Screenshots**:
 
 ![Sort Implementation](<screenshots/Screenshot 2025-12-07 at 7.54.19 PM.png>)
-*Screenshot shows: Sort menu, prompts for field and order, sorted records displayed*
+_Screenshot shows: Sort menu, prompts for field and order, sorted records displayed_
 
 **Result**: ✅ Sorting works by selected field and order
 
@@ -402,17 +421,27 @@ sortRecords(field, order) {
 
 ### Task 3.5: Export Vault Data to Text File (2 marks)
 
-**Purpose**: Generate human-readable .txt file with all records.
+**Purpose**: Generate a human-readable export of all vault records with metadata for auditing.
 
-**Implementation**: Created exportData() function that generates export.txt with header (date/time, total records) and formatted record list.
+**Key Implementation (in `db/index.js` + menu option 7)**:
 
-**Testing**: Menu option 7 - Export Data
-- File created: export.txt
-- Header includes: Export date/time, total records
-- Records formatted clearly
-- Confirmation message displayed
+- Added `exportToText()` that loads normalized records (with `createdAt`), writes `export.txt` at project root.
+- Header includes generation timestamp, total record count, and file name; each line shows ID, Name, Value, Created.
+- Menu updated to include `7. Export Data` (exit shifted to `8`).
 
-**Result**: ✅ Export functionality implemented
+**Commands Executed**:
+
+```bash
+cd "/Users/sobanahmad/Fast-Nuces/Semester 7/SCD/final/SCDProject25"
+date
+node main.js   # select option 7 when prompted
+head -n 10 export.txt
+```
+
+**Screenshot**:
+![alt text](<screenshots/Screenshot 2025-12-07 at 8.31.11 PM.png>)
+
+**Result**: ✅ `export.txt` generated with header and all records; confirmation shown in CLI.
 
 ---
 
@@ -420,15 +449,28 @@ sortRecords(field, order) {
 
 **Purpose**: Create timestamped backups automatically on add/delete operations.
 
-**Implementation**: 
+**Implementation**:
+
 - Backup folder: /backups
-- Filename format: backup_YYYY-MM-DD_HH-MM-SS.json
-- Triggered on recordAdded and recordDeleted events
-- Contains complete vault state
+- Filename format: backup_YYYY-MM-DD_HH-MM-SS.json (ISO timestamp sanitized)
+- Triggered on recordAdded and recordDeleted events in `events/logger.js`
+- Reads latest vault data and writes full snapshot to backup file
 
 **Testing**: Add/delete records trigger automatic backups with confirmation messages.
 
-**Result**: ✅ Automatic backup system working
+**Commands Executed**:
+
+```bash
+cd "/Users/sobanahmad/Fast-Nuces/Semester 7/SCD/final/SCDProject25"
+date
+node main.js   # add record (opt 1), delete record (opt 4), then exit
+ls -lh backups | tail -n 5
+```
+
+**Screenshot**:
+![alt text](<screenshots/Screenshot 2025-12-07 at 8.39.53 PM.png>)
+
+**Result**: ✅ Backups auto-created on add/delete with timestamped filenames and logged confirmations
 
 ---
 
@@ -436,29 +478,55 @@ sortRecords(field, order) {
 
 **Purpose**: Show vault statistics (total records, longest name, date ranges, last modified).
 
-**Implementation**: Created statistics() function analyzing vault data.
+**Implementation**:
 
-**Testing**: Menu option shows:
-- Total Records
-- Last Modified timestamp
-- Longest Name with character count
-- Earliest and Latest Record dates
+- Added `getStatistics()` to compute totals, longest name/length, earliest and latest `createdAt`, and file last modified (mtime).
+- Menu option `8. View Vault Statistics` prints a formatted block; exit shifted to `9`.
 
-**Result**: ✅ Statistics displayed correctly
+**Commands Executed**:
+
+```bash
+cd "/Users/sobanahmad/Fast-Nuces/Semester 7/SCD/final/SCDProject25"
+date
+node main.js   # choose option 8, then exit
+```
+
+**Screenshot**:
+![alt text](<screenshots/Screenshot 2025-12-07 at 8.38.42 PM.png>)
+
+**Result**: ✅ Statistics rendered in CLI with totals, last modified, longest name, earliest/latest dates
 
 ---
 
 ### Task 3.8: MongoDB Setup (1 mark)
 
-**Purpose**: Replace JSON file storage with MongoDB database.
+**Purpose**: Provision MongoDB via Docker for the application to use.
 
-**Implementation**:
-- Installed mongoose ODM
-- Created schema/model for records
-- Replaced file operations with MongoDB queries
-- Initially hardcoded connection string for testing
+**Commands Executed**:
 
-**Result**: ✅ MongoDB integrated successfully
+```bash
+cd "/Users/sobanahmad/Fast-Nuces/Semester 7/SCD/final/SCDProject25"
+date
+docker pull mongo:6
+docker volume create vault-mongo-data
+docker run -d --name vault-mongo \
+  -p 27017:27017 \
+  -v vault-mongo-data:/data/db \
+  -e MONGO_INITDB_DATABASE=vaultdb \
+  mongo:6
+docker ps --filter name=vault-mongo
+docker logs --tail 20 vault-mongo
+```
+
+**Connection Strings**:
+
+- Host/local: `mongodb://localhost:27017/vaultdb`
+- In-network (later): `mongodb://vault-mongo:27017/vaultdb`
+
+**Screenshot**:
+![alt text](<screenshots/Screenshot 2025-12-07 at 8.44.01 PM.png>)
+
+**Result**: ✅ MongoDB container running with persistent volume and exposed port 27017
 
 ---
 
@@ -467,15 +535,17 @@ sortRecords(field, order) {
 **Purpose**: Move MongoDB connection string to .env file for security.
 
 **Implementation**:
+
 ```bash
 # .env file
 MONGO_URI=mongodb://localhost:27017/vaultdb
 ```
 
 **Code**:
+
 ```javascript
-require('dotenv').config();
-const mongoose = require('mongoose');
+require("dotenv").config();
+const mongoose = require("mongoose");
 mongoose.connect(process.env.MONGO_URI);
 ```
 
@@ -488,6 +558,7 @@ mongoose.connect(process.env.MONGO_URI);
 **Purpose**: Merge completed features back to main branch.
 
 **Commands**:
+
 ```bash
 git add .
 git commit -m "Add all features and MongoDB integration"
@@ -505,6 +576,7 @@ git push origin main
 ### Task 4.1-4.2: Create Dockerfiles (2 marks)
 
 **Backend Dockerfile**:
+
 ```dockerfile
 FROM node:18-alpine
 WORKDIR /app
@@ -522,6 +594,7 @@ CMD ["node", "main.js"]
 ### Task 4.3: Build and Run Containers Locally (4 marks)
 
 **Commands**:
+
 ```bash
 docker build -t schwifty404/scdproject25:v1.0 .
 docker run -d --name mongodb -v mongo-data:/data/db mongo:latest
@@ -531,6 +604,7 @@ docker logs <container_id>
 ```
 
 **Screenshots Required**:
+
 - Container logs showing application running
 - Container processes (docker ps output)
 
@@ -541,6 +615,7 @@ docker logs <container_id>
 ### Task 4.4: Publish to Docker Hub (2 marks)
 
 **Commands**:
+
 ```bash
 docker push schwifty404/scdproject25:v1.0
 ```
@@ -558,6 +633,7 @@ docker push schwifty404/scdproject25:v1.0
 **Purpose**: Isolate containers with private networking, preventing public MongoDB access.
 
 **Commands**:
+
 ```bash
 docker network create --driver bridge app-network
 docker network inspect app-network
@@ -574,6 +650,7 @@ docker network inspect app-network
 **Purpose**: Persist MongoDB data across container restarts.
 
 **Commands**:
+
 ```bash
 docker volume create mongo-data
 docker run -d --name mongodb \
@@ -589,6 +666,7 @@ docker run -d --name mongodb \
 ### Task 5.3: Configure Ports and Environment Variables (2 marks)
 
 **Commands**:
+
 ```bash
 docker run -d --name backend \
   --network app-network \
@@ -604,6 +682,7 @@ docker run -d --name backend \
 ### Task 5.4: Demonstrate Data Persistence (2 marks)
 
 **Commands**:
+
 ```bash
 # Add data to database
 # Stop and remove containers
@@ -624,6 +703,7 @@ docker run -d --name backend --network app-network -p 3000:3000 -e MONGO_URI=mon
 ### Task 5.5: List Docker Commands and Explain Difficulties (6 marks)
 
 **All Commands Used**:
+
 ```bash
 docker network create --driver bridge app-network
 docker volume create mongo-data
@@ -637,6 +717,7 @@ docker rm <container>
 ```
 
 **Difficulties Encountered**:
+
 1. **Manual networking**: Tedious to specify network for each container, easy to forget
 2. **Environment variables**: Long command lines, typo-prone, hard to maintain
 3. **Port management**: Must remember which ports to expose, conflicts possible
@@ -656,8 +737,9 @@ docker rm <container>
 **Purpose**: Simplify deployment with single configuration file.
 
 **docker-compose.yml**:
+
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   mongodb:
@@ -698,6 +780,7 @@ volumes:
 ### Task 6.2: Define Services with Networking and Volumes (3 marks)
 
 **Services Defined**:
+
 1. **mongodb**: Official Mongo image, connected to app-network, persistent volume
 2. **backend**: Custom image, depends on MongoDB, exposed on port 3000
 
@@ -712,6 +795,7 @@ volumes:
 ### Task 6.3: Use .env File (2 marks)
 
 **.env file**:
+
 ```
 MONGO_URI=mongodb://mongodb:27017/vaultdb
 NODE_ENV=production
@@ -726,6 +810,7 @@ NODE_ENV=production
 ### Task 6.4: Deploy with docker-compose up (2 marks)
 
 **Commands**:
+
 ```bash
 docker-compose up -d
 docker-compose ps
@@ -739,12 +824,14 @@ docker-compose logs
 ### Task 6.5: Screenshots and Explanation (4 marks)
 
 **Screenshots showing**:
+
 - docker-compose up output
 - All services running (docker-compose ps)
 - Application accessible in browser/curl
 - Logs from both services
 
 **Explanation of Improved Process**:
+
 1. **Single command**: `docker-compose up` vs multiple docker run commands
 2. **Declarative**: Configuration in YAML vs imperative commands
 3. **Service discovery**: Automatic DNS resolution between services
@@ -754,6 +841,7 @@ docker-compose logs
 7. **Simplified cleanup**: docker-compose down removes everything
 
 **Time Comparison**:
+
 - Manual: 10-15 minutes, 10+ commands, error-prone
 - Compose: 30 seconds, 1 command, repeatable
 
@@ -766,6 +854,7 @@ docker-compose logs
 ### Task 7.1: Clean Environment (1 mark)
 
 **Commands**:
+
 ```bash
 docker system prune -a  # Remove all images
 docker volume prune     # Remove unused volumes
@@ -778,6 +867,7 @@ docker volume prune     # Remove unused volumes
 ### Task 7.2: Create Compose File with Build (2 marks)
 
 **Modified docker-compose.yml**:
+
 ```yaml
 services:
   backend:
@@ -796,17 +886,20 @@ services:
 ### Task 7.3: Run docker-compose up --build (5 marks)
 
 **Commands**:
+
 ```bash
 docker-compose up --build
 ```
 
 **Screenshots showing**:
+
 1. Docker building images from Dockerfiles
 2. All services running via docker-compose ps
 3. Application functioning in browser with test data
 4. Successful API requests/responses
 
 **Explanation**:
+
 - `--build` flag forces rebuild of images from source
 - Compose builds backend from Dockerfile automatically
 - Pulls MongoDB official image
@@ -821,6 +914,7 @@ docker-compose up --build
 ### Task 7.4: Repository Update (2 marks)
 
 **Files to commit**:
+
 ```bash
 git add docker-compose.yml
 git add .env.example  # Template without secrets
@@ -831,10 +925,12 @@ git push origin main
 ```
 
 **README.md Update**:
-```markdown
+
+````markdown
 ## Docker Deployment
 
 ### Quick Start
+
 ```bash
 # Clone repository
 git clone <repo-url>
@@ -848,6 +944,7 @@ docker-compose up --build
 
 # Access application at http://localhost:3000
 ```
+````
 
 **Result**: ✅ Repository updated with Docker configuration
 
@@ -863,7 +960,7 @@ docker-compose up --build
 **Part 4**: ✅ Containerized full-stack application  
 **Part 5**: ✅ Manual Docker deployment with networks/volumes  
 **Part 6**: ✅ Simplified with Docker Compose  
-**Part 7**: ✅ Repository updated with compose configuration  
+**Part 7**: ✅ Repository updated with compose configuration
 
 ### Key Learnings
 
@@ -871,7 +968,7 @@ docker-compose up --build
 2. **Consistency**: Same container runs identically across dev/staging/production
 3. **Portability**: Docker images can be deployed anywhere Docker runs
 4. **Efficiency**: Docker Compose reduces deployment complexity from 10+ commands to 1
-5. **Best Practices**: 
+5. **Best Practices**:
    - Feature branches for development
    - Alpine images for size optimization
    - .env files for configuration
