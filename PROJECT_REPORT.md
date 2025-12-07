@@ -724,83 +724,328 @@ git commit -m "Containerize NodeVault CLI and publish image"
 
 ---
 
-## Part 5: Deploy Containers Manually (15 Marks) – ⏳ Pending
+## Part 5: Deploy Containers Manually (15 Marks) – ⏳ working
 
-_Status_: Not started; commands below remain a plan and have not been executed or validated yet.
+_Status_: started; Work in progress
 
 ### Task 5.1: Create Private Docker Network (3 marks)
 
 **Purpose**: Isolate containers with private networking, preventing public MongoDB access.
 
-**Commands**:
+**Commands Executed**:
 
 ```bash
-docker network create --driver bridge app-network
-docker network inspect app-network
+# Create custom bridge network
+docker network create --driver bridge nodevault-private
+
+# Inspect network configuration
+docker network inspect nodevault-private
+
+# List all networks
+docker network ls
 ```
 
-**Proof of Implementation**: Network inspect shows internal IP range, containers not publicly exposed.
+**Execution Details**:
 
-**Result**: ✅ Private network created
+- Network name: `nodevault-private`
+- Driver: bridge
+- Scope: local
+- Internal IP subnet: Automatically assigned by Docker (typically 172.x.x.x range)
+- Gateway: Automatically configured
+- Containers connected to this network are isolated from external access
+
+**Proof of Implementation**: Network inspect output shows internal IP range, no public exposure. Containers on this network can communicate using container names as hostnames.
+
+**Result**: ✅ Private network `nodevault-private` created successfully
+
+**Screenshots**:
+![Network creation command and inspect output](<screenshots/Screenshot 2025-12-07 at 9.25.49 PM.png>)
+_Screenshot shows: docker network create command, docker network inspect showing subnet and gateway configuration_
+
+![Network list verification](<screenshots/Screenshot 2025-12-07 at 9.26.01 PM.png>)
+_Screenshot shows: docker network ls displaying nodevault-private with bridge driver and local scope_
 
 ---
 
-### Task 5.2: Attach Volumes for MongoDB (2 marks)
+### Task 5.2: Deploy MongoDB with Volume (2 marks)
 
-**Purpose**: Persist MongoDB data across container restarts.
+**Purpose**: Deploy MongoDB on private network with persistent volume storage.
 
-**Commands**:
+**Commands Executed**:
 
 ```bash
-docker volume create mongo-data
-docker run -d --name mongodb \
-  --network app-network \
-  -v mongo-data:/data/db \
-  mongo:latest
+# Stop and remove any existing MongoDB container
+docker stop mongodb-dev 2>/dev/null || true
+docker rm mongodb-dev 2>/dev/null || true
+
+# Create persistent volume for MongoDB data
+docker volume create mongodb-data
+
+# Inspect volume configuration
+docker volume inspect mongodb-data
+
+# List all volumes
+docker volume ls
+
+# Deploy MongoDB container on private network
+docker run -d \
+  --name mongodb \
+  --network nodevault-private \
+  -e MONGO_INITDB_ROOT_USERNAME=admin \
+  -e MONGO_INITDB_ROOT_PASSWORD=SecurePass123 \
+  -v mongodb-data:/data/db \
+  mongo:7.0
+
+# Verify MongoDB is running
+docker ps | grep mongodb
+
+# Check MongoDB logs
+docker logs mongodb
+
+# Verify MongoDB is NOT publicly accessible (should fail)
+nc -zv localhost 27017 2>&1 || echo "✓ MongoDB NOT publicly accessible"
+
+# Verify MongoDB is on private network
+docker network inspect nodevault-private | grep mongodb
 ```
 
-**Result**: ✅ Volume configured for persistence
+**Execution Details**:
 
----
+- Volume name: `mongodb-data`
+- Container name: `mongodb`
+- Network: `nodevault-private` (isolated from host)
+- Image: `mongo:7.0`
+- Authentication: Enabled with admin credentials
+- Data persistence: `/data/db` mounted to named volume
+- **No port mapping**: MongoDB is only accessible within the private network, not from host
 
-### Task 5.3: Configure Ports and Environment Variables (2 marks)
+**Network Isolation Proof**:
 
-**Commands**:
+- No `-p` flag used, so port 27017 is NOT exposed to host
+- `nc -zv localhost 27017` fails, confirming no public access
+- Only containers on `nodevault-private` network can reach MongoDB using `mongodb:27017`
+
+**Result**: ✅ MongoDB deployed with persistent volume on private network, publicly isolated
+
+**Screenshots**:
+![Volume creation and MongoDB deployment](<screenshots/Screenshot 2025-12-07 at 9.50.54 PM.png>)
+_Screenshot shows: docker volume create, docker volume inspect showing mountpoint, docker run command with all parameters, docker ps showing running container_
+
+![Network isolation verification](<screenshots/Screenshot 2025-12-07 at 9.53.45 PM.png>)
+_Screenshot shows: docker logs with MongoDB startup messages, nc command failing (proving no public access), docker network inspect confirming mongodb is connected to nodevault-private network_
+
+### Task 5.3: Deploy Backend Container (2 marks)
+
+**Purpose**: Deploy NodeVault backend container on private network with environment variables for MongoDB connection.
+
+**Commands Executed**:
 
 ```bash
-docker run -d --name backend \
-  --network app-network \
-  -p 3000:3000 \
-  -e MONGO_URI=mongodb://mongodb:27017/vaultdb \
+# Deploy backend container on private network
+docker run -d \
+  --name nodevault-backend \
+  --network nodevault-private \
+  -e MONGODB_URI=mongodb://admin:SecurePass123@mongodb:27017/nodevault?authSource=admin \
+  -e NODE_ENV=production \
   schwifty404/scdproject25:v1.0
+
+# Verify both containers are running
+docker ps
+
+# Check containers on the network
+docker network inspect nodevault-private --format '{{range .Containers}}{{.Name}} {{end}}'
+
+# View backend logs
+docker logs nodevault-backend
+
+# Test connectivity between containers
+docker exec nodevault-backend ping -c 3 mongodb
 ```
 
-**Result**: ✅ Ports and env vars configured
+**Execution Details**:
+
+- Container name: `nodevault-backend`
+- Network: `nodevault-private` (same network as MongoDB)
+- Image: `schwifty404/scdproject25:v1.0` (from Docker Hub)
+- Environment variables:
+  - `MONGODB_URI`: Full connection string with authentication to `mongodb:27017`
+  - `NODE_ENV`: Set to production
+- **No port mapping**: Backend runs isolated, accessible only within private network
+- Container-to-container communication: Backend uses hostname `mongodb` to reach MongoDB
+
+**Network Communication**:
+
+- Both containers (`mongodb` and `nodevault-backend`) are on `nodevault-private` network
+- Docker's internal DNS resolves `mongodb` to the MongoDB container's IP
+- ping test confirms network connectivity between containers
+- MongoDB authentication uses credentials from Task 5.2
+
+**Result**: ✅ Backend deployed successfully, connected to MongoDB on private network
+
+**Screenshot**:
+![Backend deployment and network verification](<screenshots/Screenshot 2025-12-07 at 10.06.14 PM.png>)
+_Screenshot shows: docker run command for backend, docker ps showing both containers running, docker network inspect showing both containers on nodevault-private network, docker logs output, successful ping test between containers_
 
 ---
 
-### Task 5.4: Demonstrate Data Persistence (2 marks)
+### Task 5.4: Verify Network Isolation (2 marks)
 
-**Commands**:
+**Purpose**: Prove that containers are isolated on the private network with no public exposure, while maintaining container-to-container communication.
+
+**Commands Executed**:
 
 ```bash
-# Add data to database
-# Stop and remove containers
-docker stop mongodb backend
-docker rm mongodb backend
+# Test MongoDB public access (should fail)
+nc -zv localhost 27017 2>&1 || echo "✓ MongoDB is NOT publicly accessible"
 
-# Relaunch with same volume
-docker run -d --name mongodb --network app-network -v mongo-data:/data/db mongo:latest
-docker run -d --name backend --network app-network -p 3000:3000 -e MONGO_URI=mongodb://mongodb:27017/vaultdb schwifty404/scdproject25:v1.0
+# Check exposed ports for MongoDB (should be empty)
+docker port mongodb
 
-# Verify data still exists
+# Check exposed ports for backend (should be empty)
+docker port nodevault-backend
+
+# Show network configuration
+docker network inspect nodevault-private
+
+# Test container-to-container communication (should succeed)
+docker exec nodevault-backend ping -c 3 mongodb
+
+# Show containers on the network with IPs
+docker network inspect nodevault-private --format '{{range .Containers}}Container: {{.Name}}, IPv4: {{.IPv4Address}}{{println}}{{end}}'
+
+# List all containers with networks
+docker ps --format "table {{.Names}}\t{{.Ports}}\t{{.Networks}}"
 ```
 
-**Result**: ✅ Data persists across container recreation
+**Execution Details**:
+
+- **MongoDB public access test**: `nc -zv localhost 27017` fails, confirming MongoDB is NOT accessible from host
+- **Port mapping verification**: `docker port` commands return empty (no ports exposed to host)
+- **Container-to-container communication**: ping test succeeds, proving internal network connectivity
+- **Network isolation proof**:
+  - mongodb: 172.28.0.2/16 (private IP only)
+  - nodevault-backend: 172.28.0.3/16 (private IP only)
+- **No public exposure**: Neither container has port mappings in `docker ps` output
+
+**Network Isolation Verification**:
+
+1. ✅ No ports exposed to host (no `-p` flags used in deployment)
+2. ✅ Containers cannot be accessed from outside the private network
+3. ✅ Containers CAN communicate within `nodevault-private` network using hostnames
+4. ✅ Docker's internal DNS resolves container names to private IPs
+5. ✅ Security: MongoDB is completely isolated from public access
+
+**Result**: ✅ Network isolation verified successfully - containers communicate privately, no public exposure
+
+**Screenshot**:
+![Network isolation verification and container communication](<screenshots/Screenshot 2025-12-07 at 10.10.32 PM.png>)
+_Screenshot shows: successful ping test between containers (172.28.0.2), network inspect showing both containers with private IPs (mongodb: 172.28.0.2/16, nodevault-backend: 172.28.0.3/16), docker ps showing no exposed PORTS for either container, both containers on nodevault-private network_
 
 ---
 
-### Task 5.5: List Docker Commands and Explain Difficulties (6 marks)
+### Task 5.5: Test Data Persistence (2 marks)
+
+**Purpose**: Demonstrate that MongoDB data persists across container destruction and recreation using Docker volumes.
+
+**Commands Executed**:
+
+```bash
+# Create test script to add data to MongoDB
+cat > /tmp/test-mongo.js << 'EOF'
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://admin:SecurePass123@mongodb:27017/nodevault?authSource=admin')
+  .then(async () => {
+    console.log('Connected to MongoDB');
+    const Record = mongoose.model('Record', new mongoose.Schema({
+      name: String,
+      value: String,
+      createdAt: Date
+    }));
+    await Record.create({
+      name: 'TestRecord1',
+      value: 'PersistenceTest',
+      createdAt: new Date()
+    });
+    console.log('Test record created');
+    const count = await Record.countDocuments();
+    console.log('Total records:', count);
+    process.exit(0);
+  })
+  .catch(err => {
+    console.error('Error:', err);
+    process.exit(1);
+  });
+EOF
+
+# Copy script into container and execute to add test data
+docker cp /tmp/test-mongo.js nodevault-backend:/tmp/
+docker exec nodevault-backend node /tmp/test-mongo.js
+
+# Verify data exists before destroying containers
+docker exec mongodb mongosh -u admin -p SecurePass123 --authenticationDatabase admin --eval "db.adminCommand('listDatabases')"
+
+# Stop and remove both containers
+docker stop nodevault-backend mongodb
+docker rm nodevault-backend mongodb
+
+# Verify containers are removed
+docker ps -a | grep -E "nodevault-backend|mongodb" || echo "✓ Containers removed"
+
+# Verify volume still exists
+docker volume ls | grep mongodb-data
+docker volume inspect mongodb-data
+
+# Recreate MongoDB with SAME volume
+docker run -d \
+  --name mongodb \
+  --network nodevault-private \
+  -e MONGO_INITDB_ROOT_USERNAME=admin \
+  -e MONGO_INITDB_ROOT_PASSWORD=SecurePass123 \
+  -v mongodb-data:/data/db \
+  mongo:7.0
+
+# Recreate backend
+docker run -d \
+  --name nodevault-backend \
+  --network nodevault-private \
+  -e MONGODB_URI=mongodb://admin:SecurePass123@mongodb:27017/nodevault?authSource=admin \
+  -e NODE_ENV=production \
+  schwifty404/scdproject25:v1.0
+
+# Wait for MongoDB to start
+sleep 5
+
+# Verify data persisted after recreation
+docker exec nodevault-backend node /tmp/test-mongo.js
+```
+
+**Execution Details**:
+
+1. **Data Creation**: Test script creates a record in MongoDB database
+2. **Container Destruction**: Both containers stopped and removed completely
+3. **Volume Persistence**: `mongodb-data` volume remains intact
+4. **Container Recreation**: New containers created with same volume mounted
+5. **Data Verification**: Test script confirms data still exists after recreation
+
+**Volume Persistence Proof**:
+
+- Volume `mongodb-data` survives container removal
+- Data stored in `/data/db` inside container is mapped to the volume
+- When new MongoDB container mounts the same volume, it reads the persisted data
+- This proves Docker volumes provide true data persistence independent of container lifecycle
+
+**Result**: ✅ Data persistence verified - data survives container destruction and recreation
+
+**Screenshots**:
+![Creating test script for MongoDB data persistence](<screenshots/Screenshot 2025-12-07 at 10.24.27 PM.png>)
+_Screenshot shows: cat command creating test-mongo.js script with mongoose connection, schema definition, record creation, and document counting logic_
+
+![Data persistence verification](<screenshots/Screenshot 2025-12-07 at 10.28.32 PM.png>)
+_Screenshot shows: executing test script, stopping and removing containers, verifying volume persistence, recreating containers, and confirming data still exists after recreation_
+
+---
+
+### Tasks 5.6-5.7: Document Commands and Explain Difficulties (6 marks)
 
 **All Commands Used**:
 
