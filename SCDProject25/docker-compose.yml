@@ -1,0 +1,35 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: mongodb-repo
+    networks:
+      - nodevault-network
+    volumes:
+      - mongodb-repo-data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=SecurePass123
+      - MONGO_INITDB_DATABASE=nodevault
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nodevault-repo
+    networks:
+      - nodevault-network
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+networks:
+  nodevault-network:
+    driver: bridge
+
+volumes:
+  mongodb-repo-data:
