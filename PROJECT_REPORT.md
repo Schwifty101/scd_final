@@ -1994,7 +1994,99 @@ Screenshot shows:
 
 ---
 
-<!-- Content will be added when we reach Part 6 -->
+### Task 3.3: Create Feature Branch
+
+#### Purpose
+Create a dedicated Git feature branch for implementing new features. This follows Git best practices by isolating development work from the stable main branch.
+
+#### Git Branching Strategy
+
+**Why Feature Branches?**
+- **Isolation**: Develop features without affecting main branch
+- **Safety**: Easy to revert if something goes wrong
+- **Organization**: Clear separation between stable and in-development code
+- **Versioning**: Can tag specific features for tracking
+- **Best Practice**: Industry-standard Git workflow
+
+**Branch Naming Convention**:
+- Format: `feature/<description>`
+- Example: `feature/enhancements`
+- Descriptive and lowercase
+
+#### Commands Executed
+
+```bash
+# Ensure in SCDProject25 directory
+cd ~/Fast-Nuces/Semester\ 7/SCD/final/SCDProject25
+
+# Check current branch and status
+git branch
+git status
+
+# Create and checkout feature branch
+git checkout -b feature/enhancements
+
+# Verify on new branch
+git branch
+
+# Check status
+git status
+```
+
+#### Expected Output
+
+```
+Switched to a new branch 'feature/enhancements'
+
+# git branch output:
+* feature/enhancements
+  main
+```
+
+The asterisk (*) indicates the currently active branch.
+
+#### Git Workflow for Features
+
+```
+main branch (stable)
+  │
+  ├── checkout -b feature/enhancements
+  │
+  └── feature/enhancements branch
+        │
+        ├── Implement Feature 1 → commit → tag v1.1.0
+        ├── Implement Feature 2 → commit → tag v1.2.0
+        ├── Implement Feature 3 → commit → tag v1.3.0
+        │   ... (all features)
+        │
+        └── merge back to main
+```
+
+#### Best Practices Followed
+
+1. **Descriptive branch name**: `feature/enhancements`
+2. **Clean starting point**: Branched from clean main
+3. **Verification**: Confirmed branch switch with `git branch`
+4. **Ready for commits**: All changes will be isolated to this branch
+
+#### Screenshot
+
+**[Screenshot 3.3: Create Feature Branch]**
+![alt text](<screenshots/Screenshot 2025-12-07 at 7.30.53 PM.png>)
+![alt text](<screenshots/Screenshot 2025-12-07 at 7.36.23 PM.png>)
+
+Screenshot shows:
+- `git checkout -b feature/enhancements` command
+- "Switched to a new branch 'feature/enhancements'" message
+- `git branch` showing both branches
+- Asterisk (*) on feature/enhancements (current branch)
+- `git status` showing clean working tree
+- Current date and time
+
+#### Result
+✅ **Feature branch created successfully**. Now on `feature/enhancements` branch, ready to implement new features with proper version control.
+
+---
 
 ---
 
