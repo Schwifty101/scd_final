@@ -553,7 +553,34 @@ mongoose.connect(process.env.MONGO_URI);
 
 ---
 
-### Task 3.10: Merge Feature Branch (1 mark)
+### Task 3.10: Integrate MongoDB into Application (1 mark)
+
+**Purpose**: Switch the app’s data layer to MongoDB while preserving all CLI features.
+
+**Implementation**:
+
+- Added `package.json` with `mongoose` and `dotenv` dependencies.
+- Created `db/mongo.js` (mongoose schema/model) with async CRUD/search/sort.
+- `db/index.js` now loads `.env`, toggles Mongo when `MONGO_URI` is set, centralizes backups, export, and stats for both file and Mongo.
+- `main.js` wraps menu actions in Promises to await async DB calls.
+
+**Commands Executed**:
+
+```bash
+cd "/Users/sobanahmad/Fast-Nuces/Semester 7/SCD/final/SCDProject25"
+npm install
+date
+MONGO_URI=mongodb://localhost:27017/vaultdb node main.js
+```
+
+**Screenshot**:
+![alt text](<screenshots/Screenshot 2025-12-07 at 8.53.48 PM.png>)
+
+**Result**: ✅ Application running against MongoDB backend; export and statistics operate via Mongo data
+
+---
+
+### Task 3.11: Merge Feature Branch (1 mark)
 
 **Purpose**: Merge completed features back to main branch.
 

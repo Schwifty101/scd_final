@@ -75,8 +75,8 @@ This project involves 7 parts covering Docker containerization, deployment, and 
 - [x] Task 3.7: Implement Automatic Backup System
 - [x] Task 3.8: Implement Data Statistics
 - [x] Task 3.9: Set up MongoDB Docker container
-- [ ] Task 3.10: Integrate MongoDB into application
-- [ ] Task 3.11: Move MongoDB connection to .env file
+- [x] Task 3.10: Integrate MongoDB into application
+- [x] Task 3.11: Move MongoDB connection to .env file
 - [ ] Task 3.12: Test all features
 - [ ] Task 3.13: Merge feature branch to main
 - [ ] Report Part 3 completed
