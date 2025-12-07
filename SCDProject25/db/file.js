@@ -16,4 +16,4 @@ function writeDB(data) {
   fs.writeFileSync(dbFile, JSON.stringify(data, null, 2));
 }
 
-module.exports = { readDB, writeDB };
+module.exports = { readDB, writeDB, dbFile };

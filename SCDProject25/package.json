@@ -1,0 +1,13 @@
+{
+  "name": "scdproject25",
+  "version": "1.0.0",
+  "description": "NodeVault CLI with MongoDB integration",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "mongoose": "^7.6.3"
+  }
+}
