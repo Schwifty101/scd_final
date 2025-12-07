@@ -1073,6 +1073,8 @@ docker rm <container>
 
 **Result**: Manual deployment is functional but complex and time-intensive
 
+
+
 ---
 
 ## Part 6: Simplifying with Docker Compose (15 Marks) – ⏳ Pending
