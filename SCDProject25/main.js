@@ -15,7 +15,8 @@ function menu() {
 3. Update Record
 4. Delete Record
 5. Search Records
-6. Exit
+6. Sort Records
+7. Exit
 =====================
   `);
 
@@ -76,6 +77,31 @@ function menu() {
         break;
 
       case '6':
+        console.log('\nSort Options:');
+        console.log('1) Name');
+        console.log('2) Creation Date');
+        rl.question('Choose field (1/2): ', fieldInput => {
+          const field = fieldInput.trim() === '2' ? 'createdAt' : 'name';
+
+          rl.question('Order (asc/desc): ', orderInput => {
+            const direction = orderInput.trim().toLowerCase() === 'desc' ? 'desc' : 'asc';
+            const sorted = db.sortRecords(field, direction);
+
+            if (sorted.length === 0) {
+              console.log('No records found.');
+            } else {
+              console.log(`\nSorted by ${field === 'createdAt' ? 'creation date' : 'name'} (${direction}):`);
+              sorted.forEach(r => {
+                console.log(`ID: ${r.id} | Name: ${r.name} | Created: ${r.createdAt} | Value: ${r.value}`);
+              });
+            }
+
+            menu();
+          });
+        });
+        break;
+
+      case '7':
         console.log('👋 Exiting NodeVault...');
         rl.close();
         break;

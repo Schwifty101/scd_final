@@ -44,9 +44,27 @@ function searchRecords(keyword) {
 
   return data.filter(record => {
     const nameMatch = record.name.toLowerCase().includes(lowerKeyword);
+    const valueMatch = String(record.value).toLowerCase().includes(lowerKeyword);
     const idMatch = record.id.toString().includes(keyword);
-    return nameMatch || idMatch;
+    return nameMatch || valueMatch || idMatch;
   });
 }
 
-module.exports = { addRecord, listRecords, updateRecord, deleteRecord, searchRecords };
+// Return a sorted copy of records by field and direction
+function sortRecords(field, direction = 'asc') {
+  const data = fileDB.readDB();
+  const dir = direction.toLowerCase() === 'desc' ? -1 : 1;
+
+  const compare = (a, b) => {
+    const valA = field === 'id' ? Number(a.id) : String(a[field]).toLowerCase();
+    const valB = field === 'id' ? Number(b.id) : String(b[field]).toLowerCase();
+
+    if (valA < valB) return -1 * dir;
+    if (valA > valB) return 1 * dir;
+    return 0;
+  };
+
+  return data.slice().sort(compare);
+}
+
+module.exports = { addRecord, listRecords, updateRecord, deleteRecord, searchRecords, sortRecords };
