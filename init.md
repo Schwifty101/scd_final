@@ -89,14 +89,14 @@ This project involves 7 parts covering Docker containerization, deployment, and 
 
 **Objective**: Create Dockerfiles and publish images
 
-- [ ] Task 4.1: Create containerization branch
-- [ ] Task 4.2: Create Dockerfile for backend
-- [ ] Task 4.3: Build Docker image
-- [ ] Task 4.4: Run and test containers locally
-- [ ] Task 4.5: Document container logs and processes
-- [ ] Task 4.6: Publish image to Docker Hub
-- [ ] Task 4.7: Commit and version changes
-- [ ] Report Part 4 completed
+- [x] Task 4.1: Create containerization branch
+- [x] Task 4.2: Create Dockerfile for backend
+- [x] Task 4.3: Build Docker image
+- [x] Task 4.4: Run and test containers locally
+- [x] Task 4.5: Document container logs and processes
+- [x] Task 4.6: Publish image to Docker Hub
+- [x] Task 4.7: Commit and version changes
+- [x] Report Part 4 completed
 
 **Estimated Time**: 1-2 hours
 

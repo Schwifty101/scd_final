@@ -617,60 +617,116 @@ git push origin main
 
 ## Part 4: Containerize the Application (10 Marks)
 
-### Task 4.1-4.2: Create Dockerfiles (2 marks)
+### Task 4.1: Create containerization branch (0.5 mark)
 
-**Backend Dockerfile**:
+**Purpose**: Separate Part 4 work from earlier feature branch.
+
+**Command**:
+
+```bash
+git checkout -b feature/containerization
+```
+
+**Result**: ✅ Branch `feature/containerization` created and checked out
+
+---
+
+### Task 4.2: Dockerfile for NodeVault CLI (1.5 marks)
+
+**Files**:
+
+- `SCDProject25/Dockerfile`
+- `SCDProject25/.dockerignore`
+
+**Dockerfile**:
 
 ```dockerfile
 FROM node:18-alpine
 WORKDIR /app
+
+# Install production dependencies
 COPY package*.json ./
 RUN npm install --production
+
+# Copy application source
 COPY . .
-EXPOSE 3000
+
+ENV NODE_ENV=production
 CMD ["node", "main.js"]
 ```
 
-**Result**: ✅ Dockerfile created for backend
+**.dockerignore**:
+
+```text
+node_modules
+npm-debug.log*
+.DS_Store
+.env
+backups
+screenshots
+```
+
+**Result**: ✅ Docker build context trimmed; CLI runs via `node main.js`
 
 ---
 
-### Task 4.3: Build and Run Containers Locally (4 marks)
+### Task 4.3: Build Docker image (1.5 marks)
+
+**Command**:
+
+```bash
+cd "/Users/sobanahmad/Fast-Nuces/Semester 7/SCD/final/SCDProject25"
+docker build -t scdproject25:local .
+```
+
+**Result**: ✅ Image `scdproject25:local` built on node:18-alpine
+
+**Screenshot**:
+![Docker build and docker ps](<screenshots/Screenshot 2025-12-07 at 9.08.56 PM.png>)
+
+---
+
+### Task 4.4: Run and test container locally (2.5 marks)
+
+**Prereq**: Local MongoDB container `vault-mongo` already running on host port 27017.
+
+**Command**:
+
+```bash
+cd "/Users/sobanahmad/Fast-Nuces/Semester 7/SCD/final/SCDProject25"
+printf "9\n" | docker run -i --rm --name nodevault-cli \
+  --env MONGO_URI=mongodb://host.docker.internal:27017/vaultdb \
+  scdproject25:local
+```
+
+**Result**: ✅ Container launches CLI menu and exits cleanly when fed option 9
+
+---
+
+### Task 4.5-4.7: Logs, publish, commit (completed)
 
 **Commands**:
 
 ```bash
-docker build -t schwifty404/scdproject25:v1.0 .
-docker run -d --name mongodb -v mongo-data:/data/db mongo:latest
-docker run -d -p 3000:3000 --env-file .env --link mongodb schwifty404/scdproject25:v1.0
+cd "/Users/sobanahmad/Fast-Nuces/Semester 7/SCD/final/SCDProject25"
 docker ps
-docker logs <container_id>
-```
-
-**Screenshots Required**:
-
-- Container logs showing application running
-- Container processes (docker ps output)
-
-**Result**: ✅ Containers running locally with MongoDB
-
----
-
-### Task 4.4: Publish to Docker Hub (2 marks)
-
-**Commands**:
-
-```bash
+docker logs nodevault-cli || true   # captured logs after run
+docker tag scdproject25:local schwifty404/scdproject25:v1.0
 docker push schwifty404/scdproject25:v1.0
+git add Dockerfile .dockerignore init.md PROJECT_REPORT_COMPRESSED.md screenshots/part4-docker-build.png "screenshots/Screenshot 2025-12-07 at 9.15.10 PM.png"
+git commit -m "Containerize NodeVault CLI and publish image"
 ```
 
-**Docker Hub URL**: https://hub.docker.com/r/schwifty404/scdproject25
+**Screenshot**:
+![docker ps, logs, and Docker Hub push](<screenshots/Screenshot 2025-12-07 at 9.15.10 PM.png>)
 
-**Result**: ✅ Backend image published
+**Result**: ✅ Container logs captured, image pushed to Docker Hub, Part 4 changes committed
 
 ---
 
-## Part 5: Deploy Containers Manually (15 Marks)
+## Part 5: Deploy Containers Manually (15 Marks) – ⏳ Pending
+
+_Status_: Not started; commands below remain a plan and have not been executed or validated yet.
 
 ### Task 5.1: Create Private Docker Network (3 marks)
 
@@ -774,7 +830,9 @@ docker rm <container>
 
 ---
 
-## Part 6: Simplifying with Docker Compose (15 Marks)
+## Part 6: Simplifying with Docker Compose (15 Marks) – ⏳ Pending
+
+_Status_: Not started; content below is planning-only and not yet run.
 
 ### Task 6.1: Create docker-compose.yml (4 marks)
 
@@ -893,7 +951,9 @@ docker-compose logs
 
 ---
 
-## Part 7: Update Project Repo with Docker Compose (10 Marks)
+## Part 7: Update Project Repo with Docker Compose (10 Marks) – ⏳ Pending
+
+_Status_: Not started; steps remain to be executed.
 
 ### Task 7.1: Clean Environment (1 mark)
 
@@ -1001,10 +1061,10 @@ docker-compose up --build
 **Part 1**: ✅ Demonstrated environment inconsistency (Node 16 vs 18)
 **Part 2**: ✅ Solved with Docker containerization  
 **Part 3**: ✅ Implemented 7 features + MongoDB migration  
-**Part 4**: ✅ Containerized full-stack application  
-**Part 5**: ✅ Manual Docker deployment with networks/volumes  
-**Part 6**: ✅ Simplified with Docker Compose  
-**Part 7**: ✅ Repository updated with compose configuration
+**Part 4**: ✅ Containerized app, pushed image, documented logs, and committed changes  
+**Part 5**: ⏳ Pending (manual deployment not started)  
+**Part 6**: ⏳ Pending (compose not started)  
+**Part 7**: ⏳ Pending (repo update not started)
 
 ### Key Learnings
 
