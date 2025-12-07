@@ -61,12 +61,12 @@ This project involves 7 parts covering Docker containerization, deployment, and 
 
 ---
 
-### Part 3: Building Features into SCDProject25 (15 marks) - ⏳ PENDING
+### Part 3: Building Features into SCDProject25 (15 marks) - 🔄 IN PROGRESS
 
 **Objective**: Clone NodeVault, create feature branch, implement 7 features, integrate MongoDB
 
-- [ ] Task 3.1: Clone SCDProject25 repository
-- [ ] Task 3.2: Run application locally
+- [x] Task 3.1: Clone SCDProject25 repository ✅
+- [x] Task 3.2: Run application locally ✅
 - [ ] Task 3.3: Create feature branch
 - [ ] Task 3.4: Implement Search Functionality
 - [ ] Task 3.5: Implement Sorting Capability
@@ -157,8 +157,8 @@ This project involves 7 parts covering Docker containerization, deployment, and 
 ## Overall Progress
 
 **Total Tasks**: 60+ individual tasks across 7 parts
-**Completed**: 11 execution tasks (Planning: ✅) | Part 1: ✅ | Part 2: ✅
-**Remaining**: 49+ tasks
+**Completed**: 13 execution tasks (Planning: ✅) | Part 1: ✅ | Part 2: ✅
+**Remaining**: 47+ tasks
 **Total Estimated Time**: 15-25 hours
 
 ---
@@ -213,9 +213,9 @@ Before starting execution:
 
 ## Next Step
 
-**Current**: Ready to begin Part 3
+**Current**: Part 3, Task 3.3: Create feature branch
 
-Last completed: Part 2 ✅ (All tasks complete)
+Last completed: Task 3.2 ✅
 
 ---
 

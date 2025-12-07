@@ -1743,11 +1743,256 @@ We've successfully solved the environment inconsistency problem using Docker con
 
 ## Part 3: Building Features into SCDProject25
 
-<!-- Content will be added when we reach Part 5 -->
+### Overview
+
+In this part, we'll enhance the NodeVault CLI application by:
+1. Adding 7 new features (search, sort, export, backup, statistics)
+2. Migrating from file-based JSON storage to MongoDB
+3. Implementing environment-based configuration
+4. Following Git best practices with feature branches
+
+**Starting Point**: Basic CRUD application with in-memory JSON file storage
+**End Goal**: Feature-rich application with MongoDB backend and Docker deployment
 
 ---
 
-## Part 6: Simplifying with Docker Compose
+### Task 3.1: Clone SCDProject25 Repository
+
+#### Purpose
+Clone the NodeVault application repository to begin feature development. This CLI application currently has basic CRUD operations and uses JSON file storage.
+
+#### About NodeVault (SCDProject25)
+**Current Features**:
+- Command-line interface with interactive menu
+- CRUD operations: Create, Read, Update, Delete records
+- File-based persistence (data/vault.json)
+- Event-driven logging system
+- Modular architecture
+
+**Technology Stack**:
+- Runtime: Node.js (built-in modules only)
+- Storage: JSON file
+- Architecture: Event-driven with EventEmitter
+
+#### Commands Executed
+
+```bash
+# Navigate to working directory
+cd ~/Fast-Nuces/Semester\ 7/SCD/final/
+
+# Clone the repository
+git clone https://github.com/LaibaImran1500/SCDProject25.git
+
+# Navigate into repository
+cd SCDProject25
+
+# List files to see structure
+ls -la
+
+# View package.json (if exists)
+cat package.json 2>/dev/null || echo "No package.json - uses built-in Node modules"
+
+# View main.js to understand the app
+head -50 main.js
+
+# Check git status
+git status
+git branch
+```
+
+#### Repository Structure
+
+```
+SCDProject25/
+├── main.js              # Entry point - CLI interface
+├── db/
+│   ├── index.js         # CRUD operations
+│   ├── file.js          # File I/O for JSON storage
+│   └── record.js        # Record validation and ID generation
+├── events/
+│   ├── index.js         # EventEmitter instance
+│   └── logger.js        # Event logging
+└── data/
+    └── vault.json       # JSON data storage (created on first run)
+```
+
+#### Key Observations
+
+**No package.json**:
+- Application uses only Node.js built-in modules
+- No external dependencies (readline, fs, path, events)
+- Simple and lightweight
+
+**Modular Design**:
+- Separation of concerns (CLI, DB, Events)
+- Event-driven architecture
+- Easy to extend with new features
+
+**Current Limitations** (we'll address these):
+- No search functionality
+- No sorting capability
+- No data export
+- No backup system
+- No statistics
+- File-based storage (will migrate to MongoDB)
+
+#### Screenshot
+
+**[Screenshot 3.1: Clone SCDProject25]**
+![alt text](<screenshots/Screenshot 2025-12-07 at 7.19.25 PM.png>)
+Screenshot shows:
+- `git clone` command and output
+- Repository cloned successfully
+- `ls -la` showing directory structure
+- main.js, db/, events/, data/ visible
+- Git status showing clean working tree
+- Current branch (main or master)
+- Current date and time
+
+#### Result
+✅ **Repository cloned successfully**. We now have the NodeVault application ready for feature development.
+
+---
+
+### Task 3.2: Run Application Locally
+
+#### Purpose
+Test the base NodeVault application to understand its current functionality before implementing new features. This ensures we have a working baseline.
+
+#### Commands Executed
+
+```bash
+# Ensure in SCDProject25 directory
+cd ~/Fast-Nuces/Semester\ 7/SCD/final/SCDProject25
+
+# Use Node 18
+nvm use 18
+node -v
+
+# Run the application
+node main.js
+
+# Test all menu options (1-5)
+
+# After testing, exit and view data file
+cat data/vault.json
+
+# Show date/time
+date
+```
+
+#### Application Menu Structure
+
+```
+NodeVault Menu:
+1. Add Record
+2. List Records
+3. Update Record
+4. Delete Record
+5. Exit
+
+Enter your choice:
+```
+
+#### Current Functionality Tested
+
+**1. Add Record** (Option 1):
+- Prompts for record name
+- Prompts for record value
+- Generates unique ID (timestamp-based)
+- Saves to vault.json
+- Emits `recordAdded` event
+- Logs confirmation
+
+**2. List Records** (Option 2):
+- Reads all records from vault.json
+- Displays formatted list with ID, name, value
+- Shows "No records found" if vault is empty
+
+**3. Update Record** (Option 3):
+- Prompts for record ID
+- Prompts for new name and value
+- Updates record in vault.json
+- Emits `recordUpdated` event
+- Shows success/failure message
+
+**4. Delete Record** (Option 4):
+- Prompts for record ID
+- Removes record from vault.json
+- Emits `recordDeleted` event
+- Shows confirmation
+
+**5. Exit** (Option 5):
+- Closes readline interface
+- Terminates application
+
+#### Data Storage
+
+Records are stored in `data/vault.json`:
+```json
+[
+  {
+    "id": 1733594365789,
+    "name": "Test User",
+    "value": "test@example.com"
+  },
+  {
+    "id": 1733594380123,
+    "name": "John Doe",
+    "value": "john@example.com"
+  }
+]
+```
+
+**Record Structure**:
+- **id**: Unique timestamp (milliseconds since epoch)
+- **name**: User-provided name
+- **value**: User-provided value
+
+#### Event Logging Observed
+
+The event system logs all operations:
+```
+[EVENT] Record added: ID 1733594365789, Name: Test User
+[EVENT] Record updated: ID 1733594365789, Name: Updated User
+[EVENT] Record deleted: ID 1733594380123, Name: John Doe
+```
+
+#### Observations
+
+**✅ Working Features**:
+- Interactive CLI menu system
+- All CRUD operations functional
+- Data persistence to JSON file
+- Event-driven logging
+- Error handling for invalid IDs
+
+**❌ Missing Features** (will implement):
+- No search by name or ID
+- No sorting capability
+- No export to text file
+- No automatic backups
+- No data statistics
+- No MongoDB integration
+- No environment configuration
+
+#### Screenshot
+
+**[Screenshot 3.2: Running NodeVault Application]**
+![alt text](<screenshots/Screenshot 2025-12-07 at 7.24.32 PM.png>)
+![alt text](<screenshots/Screenshot 2025-12-07 at 7.24.46 PM.png>)
+Screenshot shows:
+- Application menu displayed
+- Testing "Add Record" with sample data
+- Listing records showing added entries
+- Contents of `data/vault.json` with stored records
+- Event log messages
+- Current date and time
+
+#### Result
+✅ **Base application tested successfully**. All current CRUD operations work correctly. Data persists to JSON file. Ready to implement new features.
+
+---
 
 <!-- Content will be added when we reach Part 6 -->
 
