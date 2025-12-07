@@ -37,4 +37,16 @@ function deleteRecord(id) {
   return record;
 }
 
-module.exports = { addRecord, listRecords, updateRecord, deleteRecord };
+// Search records by keyword (matches name or ID)
+function searchRecords(keyword) {
+  const data = fileDB.readDB();
+  const lowerKeyword = keyword.toLowerCase();
+
+  return data.filter(record => {
+    const nameMatch = record.name.toLowerCase().includes(lowerKeyword);
+    const idMatch = record.id.toString().includes(keyword);
+    return nameMatch || idMatch;
+  });
+}
+
+module.exports = { addRecord, listRecords, updateRecord, deleteRecord, searchRecords };
