@@ -1268,16 +1268,16 @@ docker-compose ps                # Check service status
 
 **Docker Compose Management Commands Summary**:
 
-| Command | Purpose |
-|---------|---------|
-| `docker-compose up -d` | Start all services in background |
-| `docker-compose ps` | Show service status |
-| `docker-compose logs` | View service logs |
-| `docker-compose restart <service>` | Restart specific service |
-| `docker-compose stop` | Stop all services (keeps containers) |
-| `docker-compose start` | Start stopped services |
-| `docker-compose down` | Stop and remove all containers |
-| `docker-compose down -v` | Stop, remove containers and volumes |
+| Command                            | Purpose                              |
+| ---------------------------------- | ------------------------------------ |
+| `docker-compose up -d`             | Start all services in background     |
+| `docker-compose ps`                | Show service status                  |
+| `docker-compose logs`              | View service logs                    |
+| `docker-compose restart <service>` | Restart specific service             |
+| `docker-compose stop`              | Stop all services (keeps containers) |
+| `docker-compose start`             | Start stopped services               |
+| `docker-compose down`              | Stop and remove all containers       |
+| `docker-compose down -v`           | Stop, remove containers and volumes  |
 
 **Result**: ✅ All services tested successfully, management commands demonstrated
 
@@ -1289,22 +1289,22 @@ docker-compose ps                # Check service status
 
 **Comparison Summary**:
 
-| Aspect | Manual (Part 5) | Docker Compose (Part 6) |
-|--------|----------------|------------------------|
-| **Commands** | 8+ separate commands | 1 command |
-| **Time** | 10-15 minutes | 30 seconds |
-| **Error Rate** | High (typos, forgotten flags) | Low (validated YAML) |
-| **Reproducible** | No | Yes |
-| **Shareable** | No | Yes (YAML + .env) |
-| **Version Control** | No | Yes |
-| **Dependency Management** | Manual ordering | Automatic (depends_on) |
-| **Environment Variables** | Command line (insecure) | .env file (secure) |
-| **Network Setup** | Manual | Automatic |
-| **Volume Setup** | Manual | Automatic |
-| **Service Discovery** | Manual | Automatic (DNS) |
-| **Cleanup** | Multiple commands | `docker-compose down` |
-| **Team Collaboration** | Difficult | Easy |
-| **Production Ready** | No | Yes |
+| Aspect                    | Manual (Part 5)               | Docker Compose (Part 6) |
+| ------------------------- | ----------------------------- | ----------------------- |
+| **Commands**              | 8+ separate commands          | 1 command               |
+| **Time**                  | 10-15 minutes                 | 30 seconds              |
+| **Error Rate**            | High (typos, forgotten flags) | Low (validated YAML)    |
+| **Reproducible**          | No                            | Yes                     |
+| **Shareable**             | No                            | Yes (YAML + .env)       |
+| **Version Control**       | No                            | Yes                     |
+| **Dependency Management** | Manual ordering               | Automatic (depends_on)  |
+| **Environment Variables** | Command line (insecure)       | .env file (secure)      |
+| **Network Setup**         | Manual                        | Automatic               |
+| **Volume Setup**          | Manual                        | Automatic               |
+| **Service Discovery**     | Manual                        | Automatic (DNS)         |
+| **Cleanup**               | Multiple commands             | `docker-compose down`   |
+| **Team Collaboration**    | Difficult                     | Easy                    |
+| **Production Ready**      | No                            | Yes                     |
 
 **Manual Deployment Challenges (from Part 5)**:
 
@@ -1336,6 +1336,7 @@ docker-compose ps                # Check service status
 **Conclusion**:
 
 Docker Compose reduces deployment complexity by **90%**, making containerized applications:
+
 - **30x faster** to deploy (30 sec vs 15 min)
 - **8x simpler** (1 command vs 8+ commands)
 - **Production-ready** with repeatable, shareable configuration
@@ -1360,6 +1361,7 @@ git branch
 ```
 
 **Current Status**:
+
 - Working directory: `/Users/sobanahmad/Fast-Nuces/Semester 7/SCD/final/SCDProject25`
 - Current branch: `feature/containerization`
 - Repository contains: Dockerfile, package.json, application code
@@ -1381,6 +1383,7 @@ docker image prune -f
 ```
 
 **Cleanup Results**:
+
 - Stopped and removed: `mongodb-compose`, `nodevault-compose`
 - Removed network: `deployment_app-network`
 - Pruned dangling images: 172.3MB reclaimed
@@ -1436,6 +1439,7 @@ volumes:
 ```
 
 **Key Difference from Part 6**:
+
 - Part 6: `image: schwifty404/scdproject25:v1.0` (pre-built image from Docker Hub)
 - Part 7: `build: context: .` (builds from source using Dockerfile)
 
@@ -1457,6 +1461,7 @@ NODE_ENV=production
 ```
 
 **Updated Variables**:
+
 - Changed from `localhost` to `mongodb` (Docker Compose service name)
 - Added authentication credentials
 - Added `NODE_ENV=production`
@@ -1496,6 +1501,7 @@ docker images | grep scdproject25
    - `nodevault-repo`: Backend container (built from source)
 
 **Services Running**:
+
 - `mongodb-repo`: Up and running on port 27017 (internal)
 - `nodevault-repo`: Up and running, connected to MongoDB
 
@@ -1608,11 +1614,13 @@ git push origin feature/containerization
 ```
 
 **Files Committed**:
+
 - `docker-compose.yml` (686 bytes)
 - `README.md` (5.8KB)
 - `.env` (102 bytes)
 
 **Commit Details**:
+
 - Commit hash: `240f80e`
 - Message: "Add Docker Compose configuration and README"
 - Branch: `feature/containerization`
